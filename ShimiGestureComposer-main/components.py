@@ -11,9 +11,9 @@ from PyQt6 import QtGui
 import numpy as np
 import pyaudio
 from model import *
-import tempofinder
+import actualtempo
 
-input = 'sample.wav'
+input = 'Closer.wav'
 
 class TransportBar(QFrame):
     position_signal = pyqtSignal(float)
@@ -24,16 +24,19 @@ class TransportBar(QFrame):
         super().__init__()
         self.play_btn = QPushButton(text="Play")
         self.time_lbl = QLabel(self.format_seconds(0))
-        self.tempo = tempofinder.tempo(input)
+        self.tempo = actualtempo.tempo(input)
         self.tempo_lbl = QLabel(f"{self.tempo} BPM")
         self.new_gesture_btn = QPushButton(text="New Gesture")
         self.play_btn.clicked.connect(self.play_pause)
         self.new_gesture_btn.clicked.connect(lambda: self.launch_popup())
 
+        self.beatlbl = QLabel("Beat:")
+
         layout = QHBoxLayout()
         layout.addWidget(self.new_gesture_btn, 0)
         layout.addWidget(self.play_btn, 0)
         layout.addWidget(self.time_lbl, 1)
+        layout.addWidget(self.beatlbl,1)
         layout.addWidget(self.tempo_lbl, 0)
         self.setLayout(layout)
 
@@ -52,8 +55,10 @@ class TransportBar(QFrame):
         self.p.terminate()
 
     def seek(self, percentage):
+        (percentage, measure) = actualtempo.beatseek(percentage)
         self.currentPosition = int(percentage * len(self.audio))
         self.time_lbl.setText(self.format_seconds(self.currentPosition / self.fs))
+        self.beatlbl.setText(f"Beat: {measure}")
 
     @staticmethod
     def format_seconds(seconds):
@@ -77,7 +82,7 @@ class TransportBar(QFrame):
         self.fs = fs
 
     def set_tempo(self, tempo):
-        self.tempo = tempofinder.tempo(input)
+        self.tempo = actualtempo.tempo(input)
         self.tempo_lbl.setText(f"{self.tempo} BPM")
 
     def play_pause(self):
@@ -341,7 +346,7 @@ class Canvas(QWidget):
     def __init__(self):
         super().__init__()
         audio, sr = librosa.load(input, mono=True, sr=None)
-        tempo = 120.0
+        tempo = actualtempo.tempo(input)
         waveform_view = WaveformView(mouse_press_callback=self.mouse_callback)
         waveform_view.render(audio, kernel=127)
 
