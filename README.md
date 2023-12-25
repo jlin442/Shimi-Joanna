@@ -1,4 +1,4 @@
 # Shimi-Joanna
 Gesture Composer
 
-These are the main code files that were edited. To use, replace existing files with the same names.
+This GUI was created to allow more customization for the robot named Shimi, found in the Robotic Musicianship Lab. It allows the user to create and organize dances to a song.
