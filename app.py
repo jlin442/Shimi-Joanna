@@ -2,13 +2,6 @@ import os
 import librosa
 from components import *
 import socket
- 
-# Instructions to run the app: 
-    # 1. Navigate to this folder in the terminal using: cd [insert folder path]
-    # 2. Run this line in the terminal: python3 -m app
-
-    # To change the song used, scroll to the bottom of this script (app.py) and edit the value of the [json_path] variable
-
 # ----------------
 
 # STRUCTURE OF APP 
@@ -17,6 +10,8 @@ import socket
     # app.py -> components.py -> model.py
         # app.py calls classes in components.py, which calls classes in model.py
 # json_handling.py is a container for multiple functions, independent of the above
+
+#-----------------
 
 class MainWindow(QWidget): # handles the main window of the app, including Canvas and the Dance Library
     def __init__(self, dances_csv_path, json_path):
